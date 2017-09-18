@@ -865,7 +865,11 @@ class S3Handler(object):
 
     if os.path.isdir(target):
       for src in source:
-        self.get_single_file(pool, src, os.path.join(target, self.get_basename(S3URL(src).path)))
+        if self.opt.keep_dir_structure:
+          final_target = os.path.join(target, S3URL(src).path)
+        else:
+          final_target = os.path.join(target, self.get_basename(S3URL(src).path))
+        self.get_single_file(pool, src, final_target)
     else:
       if len(source) > 1:
         raise Failure('Target "%s" is not a directory.' % target)
@@ -1815,6 +1819,9 @@ if __name__ == '__main__':
   parser.add_option(
       '-r', '--recursive', help='recursively checking subdirectories',
       dest='recursive', action='store_true', default=False)
+  parser.add_option(
+      '-k', '--keep-dir-structure', help='keep directory structure when using get',
+      dest='keep_dir_structure', action='store_true', default=False)
   parser.add_option(
       '-s', '--sync-check', help='check file md5 before download or upload',
       dest='sync_check', action='store_true', default=False)
