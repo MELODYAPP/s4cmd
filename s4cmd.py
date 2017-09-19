@@ -867,8 +867,10 @@ class S3Handler(object):
       for src in source:
         if self.opt.keep_dir_structure:
           final_target = os.path.join(target, S3URL(src).path)
+          message(final_target)
         else:
           final_target = os.path.join(target, self.get_basename(S3URL(src).path))
+          message(final_target)
         self.get_single_file(pool, src, final_target)
     else:
       if len(source) > 1:
